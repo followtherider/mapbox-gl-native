@@ -70,6 +70,7 @@ typedef NS_ENUM(NSInteger, MBXSettingsRuntimeStylingRows) {
     MBXSettingsRuntimeStylingUpdateGeoJSONSourceFeatures,
     MBXSettingsRuntimeStylingVectorSource,
     MBXSettingsRuntimeStylingRasterSource,
+    MBXSettingsRuntimeStylingCountryLabels,
 };
 
 typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
@@ -322,6 +323,7 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
                 @"Update GeoJSON Source: Features",
                 @"Style Vector Source",
                 @"Style Raster Source",
+                @"Style Country Label Language",
             ]];
             break;
         case MBXSettingsMiscellaneous:
@@ -473,6 +475,8 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
                     break;
                 case MBXSettingsRuntimeStylingRasterSource:
                     [self styleRasterSource];
+                case MBXSettingsRuntimeStylingCountryLabels:
+                    [self styleCountryLabelLanguage];
                     break;
                 default:
                     NSAssert(NO, @"All runtime styling setting rows should be implemented");
@@ -834,7 +838,6 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
     });
 }
 
-
 - (void)styleQuery
 {
     CGRect queryRect = CGRectInset(self.mapView.bounds, 100, 200);
@@ -1047,6 +1050,14 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
     
     MGLRasterStyleLayer *rasterLayer = [[MGLRasterStyleLayer alloc] initWithIdentifier:@"style-raster-layer-id" source:rasterSource];
     [self.mapView.style addLayer:rasterLayer];
+}
+
+- (void)styleCountryLabelLanguage
+{
+    MGLSymbolStyleLayer *countryLayer = (MGLSymbolStyleLayer *)[self.mapView.style layerWithIdentifier:@"country-label-lg"];
+    MGLStyleConstantValue<NSString *> *countryLabel = (MGLStyleConstantValue<NSString *> *)countryLayer.textField;
+    NSString *language = [countryLabel.rawValue isEqual:@"{name_zh}"] ? @"{name_en}" : @"{name_zh}";
+    countryLayer.textField = [MGLStyleValue<NSString *> valueWithRawValue:language];
 }
 
 - (IBAction)startWorldTour
