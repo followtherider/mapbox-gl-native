@@ -478,7 +478,7 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
                 case MBXSettingsRuntimeStylingRasterSource:
                     [self styleRasterSource];
                 case MBXSettingsRuntimeStylingCountryLabels:
-                    [self styleCountryLabelLanguage];
+                    [self styleCountryLabelsLanguage];
                     break;
                 default:
                     NSAssert(NO, @"All runtime styling setting rows should be implemented");
@@ -1054,16 +1054,38 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
     [self.mapView.style addLayer:rasterLayer];
 }
 
-- (void)styleCountryLabelLanguage
+-(void)styleCountryLabelsLanguage
+{
+    NSArray<NSString *> *labelLayers = @[
+        @"country-label-lg",
+        @"country-label-md",
+        @"country-label-sm",
+    ];
+    [self styleLabelLanguageForLayersNamed:labelLayers];
+}
+
+- (void)styleLabelLanguageForLayersNamed:(NSArray<NSString *> *)layers
 {
     NSString *bestLanguageForUser = [NSString stringWithFormat:@"{name_%@}", [self bestLanguageForUser]];
-    MGLSymbolStyleLayer *countryLayer = (MGLSymbolStyleLayer *)[self.mapView.style layerWithIdentifier:@"country-label-lg"];
 
-    MGLStyleConstantValue<NSString *> *countryLabel = (MGLStyleConstantValue<NSString *> *)countryLayer.textField;
-    _usingLocaleBasedCountryLabels = ![countryLabel.rawValue isEqual:bestLanguageForUser];
-    NSString *language = _usingLocaleBasedCountryLabels ? bestLanguageForUser : @"{name}";
+    for (NSString *layerName in layers) {
+        MGLSymbolStyleLayer *layer = (MGLSymbolStyleLayer *)[self.mapView.style layerWithIdentifier:layerName];
 
-    countryLayer.textField = [MGLStyleValue<NSString *> valueWithRawValue:language];
+        if ([layer isKindOfClass:[MGLSymbolStyleLayer class]]) {
+            if ([layer.textField isKindOfClass:[MGLStyleConstantValue class]]) {
+                MGLStyleConstantValue<NSString *> *label = (MGLStyleConstantValue<NSString *> *)layer.textField;
+
+                _usingLocaleBasedCountryLabels = ![label.rawValue isEqual:bestLanguageForUser];
+                NSString *language = _usingLocaleBasedCountryLabels ? bestLanguageForUser : @"{name}";
+
+                layer.textField = [MGLStyleValue<NSString *> valueWithRawValue:language];
+            } else if ([layer.textField isKindOfClass:[MGLStyleFunction class]]) {
+                NSLog(@"%@ has a function-based text field — currently unsupported by this method", layerName);
+            }
+        } else {
+            NSLog(@"%@ is not a symbol style layer", layerName);
+        }
+    }
 }
 
 - (NSString *)bestLanguageForUser
