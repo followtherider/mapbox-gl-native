@@ -118,6 +118,13 @@ struct Blend {
     static Type Get();
 };
 
+struct BlendEquation {
+    using Type = Color::BlendEquation;
+    static const constexpr Type Default = Color::BlendEquation::Add;
+    static void Set(const Type&);
+    static Type Get();
+};
+
 struct BlendFunc {
     struct Type {
         Color::BlendFactor sfactor;

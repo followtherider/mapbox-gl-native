@@ -131,6 +131,7 @@ private:
     State<value::DepthTest> depthTest;
     State<value::DepthFunc> depthFunc;
     State<value::Blend> blend;
+    State<value::BlendEquation> blendEquation;
     State<value::BlendFunc> blendFunc;
     State<value::BlendColor> blendColor;
     State<value::ColorMask> colorMask;

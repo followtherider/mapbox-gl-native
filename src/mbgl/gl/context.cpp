@@ -240,6 +240,7 @@ void Context::setDirtyState() {
     depthTest.setDirty();
     depthFunc.setDirty();
     blend.setDirty();
+    blendEquation.setDirty();
     blendFunc.setDirty();
     blendColor.setDirty();
     colorMask.setDirty();
@@ -357,7 +358,7 @@ void Context::setColor(const Color& color) {
         blend = true;
         blendColor = color.blendColor;
         apply_visitor([&] (const auto& blendFunction) {
-            // TODO: blendEquation = blendFunction.equation;
+            blendEquation = Color::BlendEquation(blendFunction.equation);
             blendFunc = { blendFunction.srcFactor, blendFunction.dstFactor };
         }, color.blendFunction);
     }

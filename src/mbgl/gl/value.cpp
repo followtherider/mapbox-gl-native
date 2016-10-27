@@ -178,6 +178,18 @@ Blend::Type Blend::Get() {
     return blend;
 }
 
+const constexpr BlendEquation::Type BlendEquation::Default;
+
+void BlendEquation::Set(const Type& value) {
+    MBGL_CHECK_ERROR(glBlendEquation(static_cast<GLenum>(value)));
+}
+
+BlendEquation::Type BlendEquation::Get() {
+    GLint blend;
+    MBGL_CHECK_ERROR(glGetIntegerv(GL_BLEND_EQUATION_RGB, &blend));
+    return static_cast<Type>(blend);
+}
+
 const constexpr BlendFunc::Type BlendFunc::Default;
 
 void BlendFunc::Set(const Type& value) {

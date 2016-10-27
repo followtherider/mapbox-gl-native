@@ -8,6 +8,14 @@ namespace gl {
 
 class Color {
 public:
+    enum class BlendEquation {
+        Min                   = 0x8007,
+        Max                   = 0x8008,
+        Add                   = 0x8006,
+        Subtract              = 0x800A,
+        ReverseSubtract       = 0x800B
+    };
+
     enum BlendFactor {
         Zero                  = 0x0000,
         One                   = 0x0001,
@@ -26,31 +34,31 @@ public:
         OneMinusConstantAlpha = 0x8004
     };
 
-    template <uint32_t E>
+    template <BlendEquation E>
     struct ConstantBlend {
-        static constexpr uint32_t equation = E;
+        static constexpr BlendEquation equation = E;
         static constexpr BlendFactor srcFactor = One;
         static constexpr BlendFactor dstFactor = One;
     };
 
-    template <uint32_t E>
+    template <BlendEquation E>
     struct LinearBlend {
-        static constexpr uint32_t equation = E;
+        static constexpr BlendEquation equation = E;
         BlendFactor srcFactor;
         BlendFactor dstFactor;
     };
 
     struct Replace {
-        static constexpr uint32_t equation = 0;
+        static constexpr BlendEquation equation = BlendEquation::Add;
         static constexpr BlendFactor srcFactor = One;
         static constexpr BlendFactor dstFactor = One;
     };
 
-    using Min              = ConstantBlend<0x8007>;
-    using Max              = ConstantBlend<0x8008>;
-    using Add              = LinearBlend<0x8006>;
-    using Subtract         = LinearBlend<0x800A>;
-    using ReverseSubtract  = LinearBlend<0x800B>;
+    using Min              = ConstantBlend<BlendEquation::Min>;
+    using Max              = ConstantBlend<BlendEquation::Max>;
+    using Add              = LinearBlend<BlendEquation::Add>;
+    using Subtract         = LinearBlend<BlendEquation::Subtract>;
+    using ReverseSubtract  = LinearBlend<BlendEquation::ReverseSubtract>;
 
     using BlendFunction = variant<
         Replace,
