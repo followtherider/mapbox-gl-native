@@ -9,8 +9,6 @@ namespace gl {
 class Color {
 public:
     enum class BlendEquation {
-        Min                   = 0x8007,
-        Max                   = 0x8008,
         Add                   = 0x8006,
         Subtract              = 0x800A,
         ReverseSubtract       = 0x800B
@@ -54,16 +52,12 @@ public:
         static constexpr BlendFactor dstFactor = One;
     };
 
-    using Min              = ConstantBlend<BlendEquation::Min>;
-    using Max              = ConstantBlend<BlendEquation::Max>;
     using Add              = LinearBlend<BlendEquation::Add>;
     using Subtract         = LinearBlend<BlendEquation::Subtract>;
     using ReverseSubtract  = LinearBlend<BlendEquation::ReverseSubtract>;
 
     using BlendFunction = variant<
         Replace,
-        Min,
-        Max,
         Add,
         Subtract,
         ReverseSubtract>;

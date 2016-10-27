@@ -5,8 +5,6 @@
 namespace mbgl {
 namespace gl {
 
-static_assert(underlying_type(Color::BlendEquation::Min) == GL_MIN, "OpenGL enum mismatch");
-static_assert(underlying_type(Color::BlendEquation::Max) == GL_MAX, "OpenGL enum mismatch");
 static_assert(underlying_type(Color::BlendEquation::Add) == GL_FUNC_ADD, "OpenGL enum mismatch");
 static_assert(underlying_type(Color::BlendEquation::Subtract) == GL_FUNC_SUBTRACT, "OpenGL enum mismatch");
 static_assert(underlying_type(Color::BlendEquation::ReverseSubtract) == GL_FUNC_REVERSE_SUBTRACT, "OpenGL enum mismatch");
