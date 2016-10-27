@@ -366,6 +366,10 @@ void Context::setColor(const Color& color) {
 }
 
 void Context::draw(const Drawable& drawable) {
+    if (drawable.segments.empty()) {
+        return;
+    }
+
     DrawMode mode = apply_visitor([&] (auto m) { return (*this)(m); }, drawable.mode);
 
     setDepth(drawable.depth);
