@@ -404,14 +404,16 @@ void Context::draw(const Drawable& drawable) {
             vertexArrayObject = id;
             vaos.emplace(vaoKey, UniqueVertexArray(std::move(id), { this }));
 
+            // If we are initializing a new VAO, we need to force the buffers
+            // to be rebound. VAOs don't inherit the existing buffer bindings.
+            vertexBuffer.setDirty();
+            elementBuffer.setDirty();
+
             return true;
         };
 
         if (needAttributeBindings()) {
-            vertexBuffer.setDirty();
             vertexBuffer = drawable.vertexBuffer;
-
-            elementBuffer.setDirty();
             elementBuffer = drawable.indexBuffer;
 
             for (const auto& binding : drawable.attributeBindings) {
