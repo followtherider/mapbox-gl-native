@@ -324,7 +324,6 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
                 @"Update GeoJSON Source: Features",
                 @"Style Vector Source",
                 @"Style Raster Source",
-                @"Style Country Label Language",
                 [NSString stringWithFormat:@"Label Countries in %@", (_usingLocaleBasedCountryLabels ? @"Local Language" : [[NSLocale currentLocale] displayNameForKey:NSLocaleIdentifier value:[self bestLanguageForUser]])],
             ]];
             break;
@@ -477,6 +476,7 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
                     break;
                 case MBXSettingsRuntimeStylingRasterSource:
                     [self styleRasterSource];
+                    break;
                 case MBXSettingsRuntimeStylingCountryLabels:
                     [self styleCountryLabelsLanguage];
                     break;
