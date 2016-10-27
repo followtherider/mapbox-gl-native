@@ -1066,21 +1066,30 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
 
 - (void)styleLabelLanguageForLayersNamed:(NSArray<NSString *> *)layers
 {
+    _usingLocaleBasedCountryLabels = !_usingLocaleBasedCountryLabels;
     NSString *bestLanguageForUser = [NSString stringWithFormat:@"{name_%@}", [self bestLanguageForUser]];
+    NSString *language = _usingLocaleBasedCountryLabels ? bestLanguageForUser : @"{name}";
 
     for (NSString *layerName in layers) {
         MGLSymbolStyleLayer *layer = (MGLSymbolStyleLayer *)[self.mapView.style layerWithIdentifier:layerName];
 
         if ([layer isKindOfClass:[MGLSymbolStyleLayer class]]) {
             if ([layer.textField isKindOfClass:[MGLStyleConstantValue class]]) {
-                MGLStyleConstantValue<NSString *> *label = (MGLStyleConstantValue<NSString *> *)layer.textField;
-
-                _usingLocaleBasedCountryLabels = ![label.rawValue isEqual:bestLanguageForUser];
-                NSString *language = _usingLocaleBasedCountryLabels ? bestLanguageForUser : @"{name}";
-
-                layer.textField = [MGLStyleValue<NSString *> valueWithRawValue:language];
+                MGLStyleConstantValue *label = (MGLStyleConstantValue<NSString *> *)layer.textField;
+                if ([label.rawValue hasPrefix:@"{name"]) {
+                    layer.textField = [MGLStyleValue valueWithRawValue:language];
+                }
             } else if ([layer.textField isKindOfClass:[MGLStyleFunction class]]) {
-                NSLog(@"%@ has a function-based text field — currently unsupported by this method", layerName);
+                MGLStyleFunction *function = (MGLStyleFunction<NSString *> *)layer.textField;
+                [function.stops enumerateKeysAndObjectsUsingBlock:^(id zoomLevel, id stop, BOOL *done) {
+                    if ([stop isKindOfClass:[MGLStyleConstantValue class]]) {
+                        MGLStyleConstantValue *label = (MGLStyleConstantValue<NSString *> *)stop;
+                        if ([label.rawValue hasPrefix:@"{name"]) {
+                            [function.stops setValue:[MGLStyleValue valueWithRawValue:language] forKey:zoomLevel];
+                        }
+                    }
+                }];
+                layer.textField = function;
             }
         } else {
             NSLog(@"%@ is not a symbol style layer", layerName);
