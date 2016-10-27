@@ -56,21 +56,21 @@ set(MBGL_CORE_FILES
     include/mbgl/gl/gl.hpp
     include/mbgl/gl/implementation.hpp
     src/mbgl/gl/attribute.hpp
-    src/mbgl/gl/color.cpp
-    src/mbgl/gl/color.hpp
+    src/mbgl/gl/color_mode.cpp
+    src/mbgl/gl/color_mode.hpp
     src/mbgl/gl/context.cpp
     src/mbgl/gl/context.hpp
     src/mbgl/gl/debugging.cpp
     src/mbgl/gl/debugging.hpp
-    src/mbgl/gl/depth.cpp
-    src/mbgl/gl/depth.hpp
+    src/mbgl/gl/depth_mode.cpp
+    src/mbgl/gl/depth_mode.hpp
+    src/mbgl/gl/draw_mode.hpp
     src/mbgl/gl/drawable.hpp
     src/mbgl/gl/extension.cpp
     src/mbgl/gl/extension.hpp
     src/mbgl/gl/framebuffer.hpp
     src/mbgl/gl/gl.cpp
     src/mbgl/gl/index_buffer.hpp
-    src/mbgl/gl/mode.hpp
     src/mbgl/gl/object.cpp
     src/mbgl/gl/object.hpp
     src/mbgl/gl/renderbuffer.hpp
@@ -78,8 +78,8 @@ set(MBGL_CORE_FILES
     src/mbgl/gl/shader.cpp
     src/mbgl/gl/shader.hpp
     src/mbgl/gl/state.hpp
-    src/mbgl/gl/stencil.cpp
-    src/mbgl/gl/stencil.hpp
+    src/mbgl/gl/stencil_mode.cpp
+    src/mbgl/gl/stencil_mode.hpp
     src/mbgl/gl/texture.hpp
     src/mbgl/gl/types.hpp
     src/mbgl/gl/uniform.cpp

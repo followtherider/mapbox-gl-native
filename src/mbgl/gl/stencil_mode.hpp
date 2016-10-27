@@ -5,7 +5,7 @@
 namespace mbgl {
 namespace gl {
 
-class Stencil {
+class StencilMode {
 public:
     template <uint32_t F>
     struct SimpleTest {
@@ -57,8 +57,8 @@ public:
     Op depthFail;
     Op pass;
 
-    static Stencil disabled() {
-       return Stencil { Always(), 0, 0, Keep, Keep, Keep };
+    static StencilMode disabled() {
+       return StencilMode { Always(), 0, 0, Keep, Keep, Keep };
     }
 };
 

@@ -6,7 +6,7 @@
 namespace mbgl {
 namespace gl {
 
-class Color {
+class ColorMode {
 public:
     enum class BlendEquation {
         Add                   = 0x8006,
@@ -63,7 +63,7 @@ public:
         ReverseSubtract>;
 
     BlendFunction blendFunction;
-    mbgl::Color blendColor;
+    Color blendColor;
 
     struct Mask {
         bool r;
@@ -74,20 +74,20 @@ public:
 
     Mask mask;
 
-    static Color disabled() {
-       return Color { Replace(), {}, { false, false, false, false } };
+    static ColorMode disabled() {
+       return ColorMode { Replace(), {}, { false, false, false, false } };
     }
 
-    static Color unblended() {
-       return Color { Replace(), {}, { true, true, true, true } };
+    static ColorMode unblended() {
+       return ColorMode { Replace(), {}, { true, true, true, true } };
     }
 
-    static Color alphaBlended() {
-        return Color { Add { One, OneMinusSrcAlpha }, {}, { true, true, true, true } };
+    static ColorMode alphaBlended() {
+        return ColorMode { Add { One, OneMinusSrcAlpha }, {}, { true, true, true, true } };
     }
 };
 
-constexpr bool operator!=(const Color::Mask& a, const Color::Mask& b) {
+constexpr bool operator!=(const ColorMode::Mask& a, const ColorMode::Mask& b) {
     return a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a;
 }
 

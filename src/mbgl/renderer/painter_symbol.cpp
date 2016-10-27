@@ -47,12 +47,12 @@ void Painter::renderSymbol(PaintParameters& parameters,
 
         context.draw({
             values_.pitchAlignment == AlignmentType::Map
-                ? depthForSublayer(0, gl::Depth::ReadOnly)
-                : gl::Depth::disabled(),
+                ? depthModeForSublayer(0, gl::DepthMode::ReadOnly)
+                : gl::DepthMode::disabled(),
             drawAcrossEdges
-                ? gl::Stencil::disabled()
-                : stencilForClipping(tile.clip),
-            colorForRenderPass(),
+                ? gl::StencilMode::disabled()
+                : stencilModeForClipping(tile.clip),
+            colorModeForRenderPass(),
             shader,
             std::move(uniformValues),
             gl::Segmented<gl::Triangles>(
@@ -119,9 +119,9 @@ void Painter::renderSymbol(PaintParameters& parameters,
 
     if (bucket.hasCollisionBoxData()) {
         context.draw({
-            gl::Depth::disabled(),
-            gl::Stencil::disabled(),
-            colorForRenderPass(),
+            gl::DepthMode::disabled(),
+            gl::StencilMode::disabled(),
+            colorModeForRenderPass(),
             shaders->collisionBox,
             CollisionBoxUniforms::values(
                 tile.matrix,

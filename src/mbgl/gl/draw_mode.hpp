@@ -23,7 +23,7 @@ public:
 class Triangles {};
 class TriangleStrip {};
 
-using Mode = variant<
+using DrawMode = variant<
     Points,
     Lines,
     LineStrip,

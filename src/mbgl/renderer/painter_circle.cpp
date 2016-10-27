@@ -23,11 +23,11 @@ void Painter::renderCircle(PaintParameters& parameters,
     const CirclePaintProperties& properties = layer.impl->paint;
 
     context.draw({
-        depthForSublayer(0, gl::Depth::ReadOnly),
+        depthModeForSublayer(0, gl::DepthMode::ReadOnly),
         frame.mapMode == MapMode::Still
-            ? stencilForClipping(tile.clip)
-            : gl::Stencil::disabled(),
-        colorForRenderPass(),
+            ? stencilModeForClipping(tile.clip)
+            : gl::StencilMode::disabled(),
+        colorModeForRenderPass(),
         parameters.shaders.circle,
         CircleUniforms::values(
             tile.translatedMatrix(properties.circleTranslate.value,

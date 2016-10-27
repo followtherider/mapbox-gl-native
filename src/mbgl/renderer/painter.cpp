@@ -266,9 +266,9 @@ void Painter::renderPass(PaintParameters& parameters,
 
             // Reset GL state to a known state so the CustomLayer always has a clean slate.
             context.vertexArrayObject = 0;
-            context.setDepth(depthForSublayer(0, gl::Depth::ReadOnly));
-            context.setStencil(gl::Stencil::disabled());
-            context.setColor(colorForRenderPass());
+            context.setDepthMode(depthModeForSublayer(0, gl::DepthMode::ReadOnly));
+            context.setStencilMode(gl::StencilMode::disabled());
+            context.setColorMode(colorModeForRenderPass());
 
             layer.as<CustomLayer>()->impl->render(state);
 
@@ -294,38 +294,38 @@ mat4 Painter::matrixForTile(const UnwrappedTileID& tileID) {
     return matrix;
 }
 
-gl::Depth Painter::depthForSublayer(uint8_t n, gl::Depth::Mask mask) const {
+gl::DepthMode Painter::depthModeForSublayer(uint8_t n, gl::DepthMode::Mask mask) const {
     float nearDepth = ((1 + currentLayer) * numSublayers + n) * depthEpsilon;
     float farDepth = nearDepth + depthRangeSize;
-    return gl::Depth { gl::Depth::LessEqual, mask, { nearDepth, farDepth } };
+    return gl::DepthMode { gl::DepthMode::LessEqual, mask, { nearDepth, farDepth } };
 }
 
-gl::Stencil Painter::stencilForClipping(const ClipID& id) const {
-    return gl::Stencil {
-        gl::Stencil::Equal { static_cast<uint32_t>(id.mask.to_ulong()) },
+gl::StencilMode Painter::stencilModeForClipping(const ClipID& id) const {
+    return gl::StencilMode {
+        gl::StencilMode::Equal { static_cast<uint32_t>(id.mask.to_ulong()) },
         static_cast<int32_t>(id.reference.to_ulong()),
         0,
-        gl::Stencil::Keep,
-        gl::Stencil::Keep,
-        gl::Stencil::Replace
+        gl::StencilMode::Keep,
+        gl::StencilMode::Keep,
+        gl::StencilMode::Replace
     };
 }
 
-gl::Color Painter::colorForRenderPass() const {
+gl::ColorMode Painter::colorModeForRenderPass() const {
     if (paintMode() == PaintMode::Overdraw) {
         const float overdraw = 1.0f / 8.0f;
-        return gl::Color {
-            gl::Color::Add {
-                gl::Color::ConstantColor,
-                gl::Color::One
+        return gl::ColorMode {
+            gl::ColorMode::Add {
+                gl::ColorMode::ConstantColor,
+                gl::ColorMode::One
             },
             Color { overdraw, overdraw, overdraw, 0.0f },
-            gl::Color::Mask { true, true, true, true }
+            gl::ColorMode::Mask { true, true, true, true }
         };
     } else if (pass == RenderPass::Translucent) {
-        return gl::Color::alphaBlended();
+        return gl::ColorMode::alphaBlended();
     } else {
-        return gl::Color::unblended();
+        return gl::ColorMode::unblended();
     }
 }
 

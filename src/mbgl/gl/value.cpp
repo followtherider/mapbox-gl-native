@@ -122,8 +122,8 @@ StencilOp::Type StencilOp::Get() {
     MBGL_CHECK_ERROR(glGetIntegerv(GL_STENCIL_FAIL, &sfail));
     MBGL_CHECK_ERROR(glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL, &dpfail));
     MBGL_CHECK_ERROR(glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS, &dppass));
-    return { static_cast<Stencil::Op>(sfail), static_cast<Stencil::Op>(dpfail),
-             static_cast<Stencil::Op>(dppass) };
+    return { static_cast<StencilMode::Op>(sfail), static_cast<StencilMode::Op>(dpfail),
+             static_cast<StencilMode::Op>(dppass) };
 }
 
 const constexpr DepthRange::Type DepthRange::Default;
@@ -201,8 +201,8 @@ BlendFunc::Type BlendFunc::Get() {
     GLint sfactor, dfactor;
     MBGL_CHECK_ERROR(glGetIntegerv(GL_BLEND_SRC_ALPHA, &sfactor));
     MBGL_CHECK_ERROR(glGetIntegerv(GL_BLEND_DST_ALPHA, &dfactor));
-    return { static_cast<Color::BlendFactor>(sfactor),
-             static_cast<Color::BlendFactor>(dfactor) };
+    return { static_cast<ColorMode::BlendFactor>(sfactor),
+             static_cast<ColorMode::BlendFactor>(dfactor) };
 }
 
 const constexpr BlendColor::Type BlendColor::Default;

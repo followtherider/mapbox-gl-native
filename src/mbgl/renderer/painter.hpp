@@ -109,9 +109,9 @@ private:
                     uint32_t i, int8_t increment);
 
     mat4 matrixForTile(const UnwrappedTileID&);
-    gl::Depth depthForSublayer(uint8_t n, gl::Depth::Mask) const;
-    gl::Stencil stencilForClipping(const ClipID&) const;
-    gl::Color colorForRenderPass() const;
+    gl::DepthMode depthModeForSublayer(uint8_t n, gl::DepthMode::Mask) const;
+    gl::StencilMode stencilModeForClipping(const ClipID&) const;
+    gl::ColorMode colorModeForRenderPass() const;
 
 #ifndef NDEBUG
     PaintMode paintMode() const {

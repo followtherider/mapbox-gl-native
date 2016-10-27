@@ -25,9 +25,9 @@ void Painter::renderLine(PaintParameters& parameters,
 
     auto draw = [&] (auto& shader, auto&& uniformValues) {
         context.draw({
-            depthForSublayer(0, gl::Depth::ReadOnly),
-            stencilForClipping(tile.clip),
-            colorForRenderPass(),
+            depthModeForSublayer(0, gl::DepthMode::ReadOnly),
+            stencilModeForClipping(tile.clip),
+            colorModeForRenderPass(),
             shader,
             std::move(uniformValues),
             gl::Segmented<gl::Triangles>(

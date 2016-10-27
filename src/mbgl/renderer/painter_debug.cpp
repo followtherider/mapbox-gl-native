@@ -21,9 +21,9 @@ void Painter::renderTileDebug(const RenderTile& renderTile) {
 
     auto draw = [&] (Color color, auto subject) {
         context.draw({
-            gl::Depth::disabled(),
-            stencilForClipping(renderTile.clip),
-            gl::Color::unblended(),
+            gl::DepthMode::disabled(),
+            stencilModeForClipping(renderTile.clip),
+            gl::ColorMode::unblended(),
             shaders->fill,
             FillColorUniforms::values(
                 renderTile.matrix,
@@ -62,9 +62,9 @@ void Painter::renderTileDebug(const RenderTile& renderTile) {
 
 #ifndef NDEBUG
 void Painter::renderClipMasks(PaintParameters&) {
-    context.setStencil(gl::Stencil::disabled());
-    context.setDepth(gl::Depth::disabled());
-    context.setColor(gl::Color::unblended());
+    context.setStencilMode(gl::StencilMode::disabled());
+    context.setDepthMode(gl::DepthMode::disabled());
+    context.setColorMode(gl::ColorMode::unblended());
     context.program = 0;
 
 #if not MBGL_USE_GLES2
@@ -99,9 +99,9 @@ void Painter::renderClipMasks(PaintParameters&) {
 }
 
 void Painter::renderDepthBuffer(PaintParameters&) {
-    context.setStencil(gl::Stencil::disabled());
-    context.setDepth(gl::Depth::disabled());
-    context.setColor(gl::Color::unblended());
+    context.setStencilMode(gl::StencilMode::disabled());
+    context.setDepthMode(gl::DepthMode::disabled());
+    context.setColorMode(gl::ColorMode::unblended());
     context.program = 0;
 
 #if not MBGL_USE_GLES2

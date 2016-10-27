@@ -1,9 +1,9 @@
 #pragma once
 
 #include <mbgl/gl/types.hpp>
-#include <mbgl/gl/depth.hpp>
-#include <mbgl/gl/stencil.hpp>
-#include <mbgl/gl/color.hpp>
+#include <mbgl/gl/depth_mode.hpp>
+#include <mbgl/gl/stencil_mode.hpp>
+#include <mbgl/gl/color_mode.hpp>
 #include <mbgl/util/color.hpp>
 #include <mbgl/util/range.hpp>
 
@@ -19,7 +19,7 @@ struct ClearDepth {
 };
 
 struct ClearColor {
-    using Type = mbgl::Color;
+    using Type = Color;
     static const constexpr Type Default = { 0, 0, 0, 0 };
     static void Set(const Type&);
     static Type Get();
@@ -47,7 +47,7 @@ struct DepthMask {
 };
 
 struct ColorMask {
-    using Type = Color::Mask;
+    using Type = ColorMode::Mask;
     static const constexpr Type Default = { true, true, true, true };
     static void Set(const Type&);
     static Type Get();
@@ -59,7 +59,7 @@ struct StencilFunc {
         int32_t ref;
         uint32_t mask;
     };
-    static const constexpr Type Default = { Stencil::Always::func, 0, ~0u };
+    static const constexpr Type Default = { StencilMode::Always::func, 0, ~0u };
     static void Set(const Type&);
     static Type Get();
 };
@@ -77,11 +77,11 @@ struct StencilTest {
 
 struct StencilOp {
     struct Type {
-        Stencil::Op sfail;
-        Stencil::Op dpfail;
-        Stencil::Op dppass;
+        StencilMode::Op sfail;
+        StencilMode::Op dpfail;
+        StencilMode::Op dppass;
     };
-    static const constexpr Type Default = { Stencil::Keep, Stencil::Keep, Stencil::Keep };
+    static const constexpr Type Default = { StencilMode::Keep, StencilMode::Keep, StencilMode::Keep };
     static void Set(const Type&);
     static Type Get();
 };
@@ -105,8 +105,8 @@ struct DepthTest {
 };
 
 struct DepthFunc {
-    using Type = Depth::Function;
-    static const constexpr Type Default = Depth::Less;
+    using Type = DepthMode::Function;
+    static const constexpr Type Default = DepthMode::Less;
     static void Set(const Type&);
     static Type Get();
 };
@@ -119,18 +119,18 @@ struct Blend {
 };
 
 struct BlendEquation {
-    using Type = Color::BlendEquation;
-    static const constexpr Type Default = Color::BlendEquation::Add;
+    using Type = ColorMode::BlendEquation;
+    static const constexpr Type Default = ColorMode::BlendEquation::Add;
     static void Set(const Type&);
     static Type Get();
 };
 
 struct BlendFunc {
     struct Type {
-        Color::BlendFactor sfactor;
-        Color::BlendFactor dfactor;
+        ColorMode::BlendFactor sfactor;
+        ColorMode::BlendFactor dfactor;
     };
-    static const constexpr Type Default = { Color::One, Color::Zero };
+    static const constexpr Type Default = { ColorMode::One, ColorMode::Zero };
     static void Set(const Type&);
     static Type Get();
 };
@@ -140,7 +140,7 @@ constexpr bool operator!=(const BlendFunc::Type& a, const BlendFunc::Type& b) {
 }
 
 struct BlendColor {
-    using Type = mbgl::Color;
+    using Type = Color;
     static const constexpr Type Default = { 0, 0, 0, 0 };
     static void Set(const Type&);
     static Type Get();

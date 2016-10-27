@@ -1,14 +1,14 @@
 #pragma once
 
 #include <mbgl/gl/object.hpp>
-#include <mbgl/gl/mode.hpp>
+#include <mbgl/gl/draw_mode.hpp>
 
 namespace mbgl {
 namespace gl {
 
 class Line {
 public:
-    using Mode = Lines;
+    using DrawMode = Lines;
 
     Line(uint16_t a_, uint16_t b_)
         : a(a_), b(b_) {}
@@ -19,7 +19,7 @@ public:
 
 class Triangle {
 public:
-    using Mode = Triangles;
+    using DrawMode = Triangles;
 
     Triangle(uint16_t a_, uint16_t b_, uint16_t c_)
         : a(a_), b(b_), c(c_) {}

@@ -37,9 +37,9 @@ void Painter::renderFill(PaintParameters& parameters,
 
         auto draw = [&] (uint8_t sublayer, auto& shader, const auto& subject) {
             context.draw({
-                depthForSublayer(sublayer, gl::Depth::ReadWrite),
-                stencilForClipping(tile.clip),
-                colorForRenderPass(),
+                depthModeForSublayer(sublayer, gl::DepthMode::ReadWrite),
+                stencilModeForClipping(tile.clip),
+                colorModeForRenderPass(),
                 shader,
                 FillPatternUniforms::values(
                     tile.translatedMatrix(properties.fillTranslate.value,
@@ -78,9 +78,9 @@ void Painter::renderFill(PaintParameters& parameters,
     } else {
         auto draw = [&] (uint8_t sublayer, auto& shader, Color outlineColor, const auto& subject) {
             context.draw({
-                depthForSublayer(sublayer, gl::Depth::ReadWrite),
-                stencilForClipping(tile.clip),
-                colorForRenderPass(),
+                depthModeForSublayer(sublayer, gl::DepthMode::ReadWrite),
+                stencilModeForClipping(tile.clip),
+                colorModeForRenderPass(),
                 shader,
                 FillColorUniforms::values(
                     tile.translatedMatrix(properties.fillTranslate.value,

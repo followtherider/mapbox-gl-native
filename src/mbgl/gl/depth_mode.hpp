@@ -5,7 +5,7 @@
 namespace mbgl {
 namespace gl {
 
-class Depth {
+class DepthMode {
 public:
     enum Function {
         Never        = 0x0200,
@@ -27,8 +27,8 @@ public:
     Mask mask;
     Range<float> range;
 
-    static Depth disabled() {
-       return Depth { Always, ReadOnly, { 0.0, 1.0 } };
+    static DepthMode disabled() {
+       return DepthMode { Always, ReadOnly, { 0.0, 1.0 } };
     }
 };
 

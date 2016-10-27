@@ -27,9 +27,9 @@ void Painter::renderRaster(PaintParameters& parameters,
     context.bindTexture(*bucket.texture, 1, gl::TextureFilter::Linear);
 
     context.draw({
-        depthForSublayer(0, gl::Depth::ReadOnly),
-        gl::Stencil::disabled(),
-        colorForRenderPass(),
+        depthModeForSublayer(0, gl::DepthMode::ReadOnly),
+        gl::StencilMode::disabled(),
+        colorModeForRenderPass(),
         parameters.shaders.raster,
         RasterUniforms::values(
             tile.matrix,

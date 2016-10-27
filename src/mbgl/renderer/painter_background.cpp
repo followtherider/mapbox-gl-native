@@ -29,9 +29,9 @@ void Painter::renderBackground(PaintParameters& parameters, const BackgroundLaye
 
         for (const auto& tileID : util::tileCover(state, state.getIntegerZoom())) {
             context.draw({
-                depthForSublayer(0, gl::Depth::ReadOnly),
-                gl::Stencil::disabled(),
-                colorForRenderPass(),
+                depthModeForSublayer(0, gl::DepthMode::ReadOnly),
+                gl::StencilMode::disabled(),
+                colorModeForRenderPass(),
                 parameters.shaders.fillPattern,
                 FillPatternUniforms::values(
                     matrixForTile(tileID),
@@ -49,9 +49,9 @@ void Painter::renderBackground(PaintParameters& parameters, const BackgroundLaye
     } else {
         for (const auto& tileID : util::tileCover(state, state.getIntegerZoom())) {
             context.draw({
-                depthForSublayer(0, gl::Depth::ReadOnly),
-                gl::Stencil::disabled(),
-                colorForRenderPass(),
+                depthModeForSublayer(0, gl::DepthMode::ReadOnly),
+                gl::StencilMode::disabled(),
+                colorModeForRenderPass(),
                 parameters.shaders.fill,
                 FillColorUniforms::values(
                     matrixForTile(tileID),

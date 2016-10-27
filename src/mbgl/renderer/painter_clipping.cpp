@@ -7,16 +7,16 @@ namespace mbgl {
 
 void Painter::renderClippingMask(const UnwrappedTileID& tileID, const ClipID& clip) {
     context.draw({
-        gl::Depth::disabled(),
-        gl::Stencil {
-            gl::Stencil::Always(),
+        gl::DepthMode::disabled(),
+        gl::StencilMode {
+            gl::StencilMode::Always(),
             static_cast<int32_t>(clip.reference.to_ulong()),
             0b11111111,
-            gl::Stencil::Keep,
-            gl::Stencil::Keep,
-            gl::Stencil::Replace
+            gl::StencilMode::Keep,
+            gl::StencilMode::Keep,
+            gl::StencilMode::Replace
         },
-        gl::Color::disabled(),
+        gl::ColorMode::disabled(),
         shaders->fill,
         FillColorUniforms::values(
            matrixForTile(tileID),

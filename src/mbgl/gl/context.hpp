@@ -85,9 +85,9 @@ public:
 
     void draw(const Drawable&);
 
-    void setDepth(const Depth&);
-    void setStencil(const Stencil&);
-    void setColor(const Color&);
+    void setDepthMode(const DepthMode&);
+    void setStencilMode(const StencilMode&);
+    void setColorMode(const ColorMode&);
 
     // Actually remove the objects we marked as abandoned with the above methods.
     // Only call this while the OpenGL context is exclusive to this thread.
@@ -152,11 +152,11 @@ private:
     UniqueFramebuffer createFramebuffer();
     UniqueRenderbuffer createRenderbuffer(RenderbufferType, uint16_t width, uint16_t height);
 
-    DrawMode operator()(const Points&);
-    DrawMode operator()(const Lines&);
-    DrawMode operator()(const LineStrip&);
-    DrawMode operator()(const Triangles&);
-    DrawMode operator()(const TriangleStrip&);
+    PrimitiveType operator()(const Points&);
+    PrimitiveType operator()(const Lines&);
+    PrimitiveType operator()(const LineStrip&);
+    PrimitiveType operator()(const Triangles&);
+    PrimitiveType operator()(const TriangleStrip&);
 
     friend detail::ProgramDeleter;
     friend detail::ShaderDeleter;

@@ -10,13 +10,13 @@
 namespace mbgl {
 namespace gl {
 
-static_assert(underlying_type(DrawMode::Points) == GL_POINTS, "OpenGL type mismatch");
-static_assert(underlying_type(DrawMode::Lines) == GL_LINES, "OpenGL type mismatch");
-static_assert(underlying_type(DrawMode::LineLoop) == GL_LINE_LOOP, "OpenGL type mismatch");
-static_assert(underlying_type(DrawMode::LineStrip) == GL_LINE_STRIP, "OpenGL type mismatch");
-static_assert(underlying_type(DrawMode::Triangles) == GL_TRIANGLES, "OpenGL type mismatch");
-static_assert(underlying_type(DrawMode::TriangleStrip) == GL_TRIANGLE_STRIP, "OpenGL type mismatch");
-static_assert(underlying_type(DrawMode::TriangleFan) == GL_TRIANGLE_FAN, "OpenGL type mismatch");
+static_assert(underlying_type(PrimitiveType::Points) == GL_POINTS, "OpenGL type mismatch");
+static_assert(underlying_type(PrimitiveType::Lines) == GL_LINES, "OpenGL type mismatch");
+static_assert(underlying_type(PrimitiveType::LineLoop) == GL_LINE_LOOP, "OpenGL type mismatch");
+static_assert(underlying_type(PrimitiveType::LineStrip) == GL_LINE_STRIP, "OpenGL type mismatch");
+static_assert(underlying_type(PrimitiveType::Triangles) == GL_TRIANGLES, "OpenGL type mismatch");
+static_assert(underlying_type(PrimitiveType::TriangleStrip) == GL_TRIANGLE_STRIP, "OpenGL type mismatch");
+static_assert(underlying_type(PrimitiveType::TriangleFan) == GL_TRIANGLE_FAN, "OpenGL type mismatch");
 
 static_assert(std::is_same<ProgramID, GLuint>::value, "OpenGL type mismatch");
 static_assert(std::is_same<ShaderID, GLuint>::value, "OpenGL type mismatch");
@@ -290,32 +290,32 @@ void Context::clear(optional<mbgl::Color> color,
 }
 
 #if not MBGL_USE_GLES2
-DrawMode Context::operator()(const Points& points) {
+PrimitiveType Context::operator()(const Points& points) {
     pointSize = points.pointSize;
-    return DrawMode::Points;
+    return PrimitiveType::Points;
 }
 #else
-DrawMode Context::operator()(const Points&) {
-    return DrawMode::Points;
+PrimitiveType Context::operator()(const Points&) {
+    return PrimitiveType::Points;
 }
 #endif // MBGL_USE_GLES2
 
-DrawMode Context::operator()(const Lines& lines) {
+PrimitiveType Context::operator()(const Lines& lines) {
     lineWidth = lines.lineWidth;
-    return DrawMode::Lines;
+    return PrimitiveType::Lines;
 }
 
-DrawMode Context::operator()(const LineStrip& lineStrip) {
+PrimitiveType Context::operator()(const LineStrip& lineStrip) {
     lineWidth = lineStrip.lineWidth;
-    return DrawMode::LineStrip;
+    return PrimitiveType::LineStrip;
 }
 
-DrawMode Context::operator()(const Triangles&) {
-    return DrawMode::Triangles;
+PrimitiveType Context::operator()(const Triangles&) {
+    return PrimitiveType::Triangles;
 }
 
-DrawMode Context::operator()(const TriangleStrip&) {
-    return DrawMode::TriangleStrip;
+PrimitiveType Context::operator()(const TriangleStrip&) {
+    return PrimitiveType::TriangleStrip;
 }
 
 std::size_t Context::VertexArrayObjectHash::operator()(const VertexArrayObjectKey& key) const {
@@ -327,8 +327,8 @@ std::size_t Context::VertexArrayObjectHash::operator()(const VertexArrayObjectKe
     return seed;
 }
 
-void Context::setDepth(const Depth& depth) {
-    if (depth.func == Depth::Always && !depth.mask) {
+void Context::setDepthMode(const DepthMode& depth) {
+    if (depth.func == DepthMode::Always && !depth.mask) {
         depthTest = false;
     } else {
         depthTest = true;
@@ -338,8 +338,8 @@ void Context::setDepth(const Depth& depth) {
     }
 }
 
-void Context::setStencil(const Stencil& stencil) {
-    if (stencil.test.is<Stencil::Always>() && !stencil.mask) {
+void Context::setStencilMode(const StencilMode& stencil) {
+    if (stencil.test.is<StencilMode::Always>() && !stencil.mask) {
         stencilTest = false;
     } else {
         stencilTest = true;
@@ -351,14 +351,14 @@ void Context::setStencil(const Stencil& stencil) {
     }
 }
 
-void Context::setColor(const Color& color) {
-    if (color.blendFunction.is<Color::Replace>()) {
+void Context::setColorMode(const ColorMode& color) {
+    if (color.blendFunction.is<ColorMode::Replace>()) {
         blend = false;
     } else {
         blend = true;
         blendColor = color.blendColor;
         apply_visitor([&] (const auto& blendFunction) {
-            blendEquation = Color::BlendEquation(blendFunction.equation);
+            blendEquation = ColorMode::BlendEquation(blendFunction.equation);
             blendFunc = { blendFunction.srcFactor, blendFunction.dstFactor };
         }, color.blendFunction);
     }
@@ -371,11 +371,11 @@ void Context::draw(const Drawable& drawable) {
         return;
     }
 
-    DrawMode mode = apply_visitor([&] (auto m) { return (*this)(m); }, drawable.mode);
+    PrimitiveType primitiveType = apply_visitor([&] (auto m) { return (*this)(m); }, drawable.drawMode);
 
-    setDepth(drawable.depth);
-    setStencil(drawable.stencil);
-    setColor(drawable.color);
+    setDepthMode(drawable.depthMode);
+    setStencilMode(drawable.stencilMode);
+    setColorMode(drawable.colorMode);
 
     program = drawable.program;
 
@@ -431,13 +431,13 @@ void Context::draw(const Drawable& drawable) {
 
         if (drawable.indexBuffer) {
             MBGL_CHECK_ERROR(glDrawElements(
-                static_cast<GLenum>(mode),
+                static_cast<GLenum>(primitiveType),
                 static_cast<GLsizei>(drawable.primitiveSize / sizeof(uint16_t) * segment.primitiveLength),
                 GL_UNSIGNED_SHORT,
                 reinterpret_cast<GLvoid*>(drawable.primitiveSize * segment.primitiveOffset)));
         } else {
             MBGL_CHECK_ERROR(glDrawArrays(
-                static_cast<GLenum>(mode),
+                static_cast<GLenum>(primitiveType),
                 static_cast<GLint>(segment.vertexOffset),
                 static_cast<GLsizei>(segment.vertexLength)));
         }

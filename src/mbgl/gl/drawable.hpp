@@ -1,10 +1,10 @@
 #pragma once
 
 #include <mbgl/gl/types.hpp>
-#include <mbgl/gl/mode.hpp>
-#include <mbgl/gl/depth.hpp>
-#include <mbgl/gl/stencil.hpp>
-#include <mbgl/gl/color.hpp>
+#include <mbgl/gl/draw_mode.hpp>
+#include <mbgl/gl/depth_mode.hpp>
+#include <mbgl/gl/stencil_mode.hpp>
+#include <mbgl/gl/color_mode.hpp>
 #include <mbgl/gl/vertex_buffer.hpp>
 #include <mbgl/gl/index_buffer.hpp>
 #include <mbgl/gl/attribute.hpp>
@@ -24,12 +24,12 @@ class UnindexedVertices {
 public:
     using VertexType = Vertex;
 
-    UnindexedVertices(Mode mode_, const VertexBuffer<Vertex>& vertexBuffer_)
-        : mode(std::move(mode_)),
+    UnindexedVertices(DrawMode drawMode_, const VertexBuffer<Vertex>& vertexBuffer_)
+        : drawMode(std::move(drawMode_)),
           vertexBuffer(vertexBuffer_.buffer),
           segments({{ 0, 0, vertexBuffer_.vertexCount, 0 }}) {}
 
-    Mode mode;
+    DrawMode drawMode;
     gl::BufferID vertexBuffer;
     static constexpr std::size_t vertexSize = sizeof(Vertex);
     static constexpr gl::BufferID indexBuffer = 0;
@@ -37,11 +37,11 @@ public:
     std::vector<Segment> segments;
 };
 
-template <class Mode, class Vertex, class...Args>
+template <class DrawMode, class Vertex, class...Args>
 auto Unindexed(const VertexBuffer<Vertex>& vertexBuffer,
-               Args&&... modeArguments) {
+               Args&&... drawModeArguments) {
     return UnindexedVertices<Vertex>(
-        Mode { std::forward<Args>(modeArguments)... },
+        DrawMode { std::forward<Args>(drawModeArguments)... },
         vertexBuffer);
 }
 
@@ -50,16 +50,16 @@ class SegmentedVertices {
 public:
     using VertexType = Vertex;
 
-    SegmentedVertices(Mode mode_,
+    SegmentedVertices(DrawMode drawMode_,
                       const VertexBuffer<Vertex>& vertexBuffer_,
                       const IndexBuffer<Primitive>& indexBuffer_,
                       const std::vector<Segment>& segments_)
-        : mode(std::move(mode_)),
+        : drawMode(std::move(drawMode_)),
           vertexBuffer(vertexBuffer_.buffer),
           indexBuffer(indexBuffer_.buffer),
           segments(segments_) {}
 
-    Mode mode;
+    DrawMode drawMode;
     gl::BufferID vertexBuffer;
     static constexpr std::size_t vertexSize = sizeof(Vertex);
     gl::BufferID indexBuffer;
@@ -67,14 +67,14 @@ public:
     const std::vector<Segment>& segments;
 };
 
-template <class Mode, class Vertex, class Primitive, class...Args>
+template <class DrawMode, class Vertex, class Primitive, class...Args>
 auto Segmented(const VertexBuffer<Vertex>& vertexBuffer,
                const IndexBuffer<Primitive>& indexBuffer,
                const std::vector<Segment>& segments,
-               Args&&... modeArguments) {
-    static_assert(std::is_same<typename Primitive::Mode, Mode>::value, "primitive mode mismatch");
+               Args&&... drawModeArguments) {
+    static_assert(std::is_same<typename Primitive::DrawMode, DrawMode>::value, "primitive mode mismatch");
     return SegmentedVertices<Vertex, Primitive>(
-        Mode { std::forward<Args>(modeArguments)... },
+        DrawMode { std::forward<Args>(drawModeArguments)... },
         vertexBuffer,
         indexBuffer,
         segments);
@@ -83,16 +83,16 @@ auto Segmented(const VertexBuffer<Vertex>& vertexBuffer,
 class Drawable {
 public:
     template <class Shader, class Subject>
-    Drawable(Depth depth_,
-             Stencil stencil_,
-             Color color_,
+    Drawable(DepthMode depthMode_,
+             StencilMode stencilMode_,
+             ColorMode colorMode_,
              Shader& shader,
              typename Shader::UniformsType::Values&& uniformValues,
              const Subject& subject)
-        : mode(subject.mode),
-          depth(std::move(depth_)),
-          stencil(std::move(stencil_)),
-          color(std::move(color_)),
+        : drawMode(subject.drawMode),
+          depthMode(std::move(depthMode_)),
+          stencilMode(std::move(stencilMode_)),
+          colorMode(std::move(colorMode_)),
           program(shader.getID()),
           vertexBuffer(subject.vertexBuffer),
           vertexSize(subject.vertexSize),
@@ -106,10 +106,10 @@ public:
         static_assert(std::is_same<typename Shader::VertexType, typename Subject::VertexType>::value, "vertex type mismatch");
     }
 
-    Mode mode;
-    Depth depth;
-    Stencil stencil;
-    Color color;
+    DrawMode drawMode;
+    DepthMode depthMode;
+    StencilMode stencilMode;
+    ColorMode colorMode;
     gl::ProgramID program;
     gl::BufferID vertexBuffer;
     std::size_t vertexSize;
