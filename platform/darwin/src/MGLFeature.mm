@@ -174,7 +174,7 @@ public:
     
     MGLShape <MGLFeaturePrivate> * operator()(const mbgl::LineString<T> &geometry) const {
         std::vector<CLLocationCoordinate2D> coordinates = toLocationCoordinates2D(geometry);
-        return [MGLPolylineFeature polylineWithCoordinates:&coordinates[0] count:coordinates.size()];
+        return [[MGLPolylineFeature alloc] initWithCoordinates:&coordinates[0] count:coordinates.size()];
     }
     
     MGLShape <MGLFeaturePrivate> * operator()(const mbgl::Polygon<T> &geometry) const {
@@ -190,7 +190,8 @@ public:
         NSMutableArray *polylines = [NSMutableArray arrayWithCapacity:geometry.size()];
         for (auto &lineString : geometry) {
             std::vector<CLLocationCoordinate2D> coordinates = toLocationCoordinates2D(lineString);
-            MGLPolyline *polyline = [MGLPolyline polylineWithCoordinates:&coordinates[0] count:coordinates.size()];
+            MGLPolyline *polyline = [[MGLPolylineFeature alloc] initWithCoordinates:&coordinates[0]
+                                                                              count:coordinates.size()];
             [polylines addObject:polyline];
         }
         

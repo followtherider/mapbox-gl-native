@@ -25,8 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param count The number of items in the `coords` array.
  @return A new polyline object.
  */
-+ (instancetype)polylineWithCoordinates:(CLLocationCoordinate2D *)coords
-                                  count:(NSUInteger)count;
+- (instancetype)initWithCoordinates:(CLLocationCoordinate2D *)coords
+                              count:(NSUInteger)count;
 
 @end
 

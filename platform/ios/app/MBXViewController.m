@@ -272,8 +272,8 @@ static NSString * const MBXViewControllerAnnotationViewReuseIdentifer = @"MBXVie
             polylineCoordinates[i] = CLLocationCoordinate2DMake([hikeCoordinatePairs[i][1] doubleValue], [hikeCoordinatePairs[i][0] doubleValue]);
         }
 
-        MGLPolyline *polyline = [MGLPolyline polylineWithCoordinates:polylineCoordinates
-                                                               count:[hikeCoordinatePairs count]];
+        MGLPolyline *polyline = [[MGLPolyline alloc] initWithCoordinates:polylineCoordinates
+                                                                   count:[hikeCoordinatePairs count]];
 
         [self.mapView addAnnotation:polyline];
 

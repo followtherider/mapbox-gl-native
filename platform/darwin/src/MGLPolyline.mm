@@ -7,10 +7,10 @@
 
 @dynamic overlayBounds;
 
-+ (instancetype)polylineWithCoordinates:(CLLocationCoordinate2D *)coords
-                                  count:(NSUInteger)count
+- (instancetype)initWithCoordinates:(CLLocationCoordinate2D *)coords
+                              count:(NSUInteger)count
 {
-    return [[self alloc] initWithCoordinates:coords count:count];
+    return [super initWithCoordinates:coords count:count];
 }
 
 - (mbgl::Annotation)annotationObjectWithDelegate:(id <MGLMultiPointDelegate>)delegate {
